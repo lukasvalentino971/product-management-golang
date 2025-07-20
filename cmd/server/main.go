@@ -8,8 +8,10 @@ import (
 	"jwt-auth-crud/internal/repositories"
 	"jwt-auth-crud/internal/services"
 	"log"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 	"github.com/joho/godotenv"
 )
 
@@ -50,6 +52,16 @@ func main() {
 
 	// Setup router
 	r := gin.Default()
+
+	// Setup CORS middleware
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"}, // Atau daftarkan domain spesifik seperti []string{"https://example.com"}
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	r.Use(middleware.RateLimiterMiddleware("10-M"))
 
